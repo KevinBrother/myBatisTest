@@ -19,7 +19,9 @@
     </select>
     <!-- 新增 -->
 	<insert id="addTeacher" parameterType="bat.com.domain.Teacher">
-		insert into teacher values (#{name}, #{password}, #{teachCourse}, #{isTutor}, #{leadClassId}, )		
+		insert into teacher(name, password, teachCourse, isTutor, leadClassId) 
+		values 
+		(#{name}, #{password}, #{teachCourse}, #{isTutor}, #{leadClassId} )	
 	</insert>
 
     <!-- 删除 -->
@@ -28,7 +30,7 @@
 	</delete>	
 		    
     <!-- 修改 -->
-    <update id="modifyTeacher" parameterType="int">
+    <update id="modifyTeacher" parameterType="bat.com.domain.Teacher">
     	update teacher set name=#{name}, password=#{password}, teachCourse=#{teachCourse}, isTutor=#{isTutor}, leadClassId=#{leadClassId}
     	where id=#{id};
     </update>

@@ -1,8 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">
 <configuration>
-   <!-- 引入外部配置文件 -->
-  <!--  <properties resource="mysql.properties"></properties> -->
+    <!-- 引入外部配置文件 -->
+    <properties resource="db.properties"></properties>
+    
+    <!-- 配置实体类的别名，配置实体类别名的目的是为了在引用实体类时可以使用实体类的别名来代替实体类，达到简写的目的 -->
+    <typeAliases>
+        <!-- 为实体类me.gacl.domain.User配置一个别名_User -->
+        <!-- <typeAlias type="me.gacl.domain.User" alias="_User"/> -->
+        <!-- 为me.gacl.domain包下的所有实体类配置别名，MyBatis默认的设置别名的方式就是去除类所在的包后的简单的类名
+         比如me.gacl.domain.User这个实体类的别名就会被设置成User
+         -->
+        <package name="bat.com.domain"/>
+    </typeAliases>
    
    <!-- 配置mybatis运行环境 -->
     <environments default="development">
@@ -10,20 +20,29 @@
             <transactionManager type="JDBC" />
             <!-- 配置数据库连接信息 -->
             <dataSource type="POOLED">
-                <property name="driver" value="com.mysql.jdbc.Driver" />
-                <property name="url" value="jdbc:mysql://localhost:3306/homework" />
-                <property name="username" value="thinking" />
-                <property name="password" value="qaz123" />
+                <property name="driver" value="${driver}" />
+                <property name="url" value="${url}" />
+                <property name="username" value="${name}" />
+                <property name="password" value="${password}" />
             </dataSource>
         </environment>
     </environments>
     
     <mappers>
+    
+    	<!-- 基于XML实现 -->
         <!-- 注册userMapper.xml文件， 
         userMapper.xml位于me.gacl.mapping这个包下，所以resource写成me/gacl/mapping/userMapper.xml-->
         <mapper resource="bat/com/mapping/teacherMapper.xml"/>
+        <mapper resource="bat/com/mapping/userMapper.xml"/>
         <!-- 告知映射文件方式2，自动扫描包内的Mapper接口与配置文件 -->
          <!-- <package name="com/cy/mybatis/mapper"/> -->
+         
+         <!-- 基于注解实现 -->
+         <mapper class="bat.com.mapping.UserMapperI"/>
+         
     </mappers>
+    
+    
     
 </configuration>

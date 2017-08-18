@@ -2,7 +2,7 @@ package bat.com.mapping;
 
 import bat.com.domain.Teacher;
 
-public interface teacherMapper {
+public interface TeacherMapperI {
 	
 	public Teacher getTeacher(int id);
 
