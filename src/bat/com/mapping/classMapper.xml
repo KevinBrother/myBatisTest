@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 为这个mapper指定一个唯一的namespace，namespace的值习惯上设置成包名+sql映射文件名，这样就能够保证namespace的值是唯一的
+例如namespace="me.gacl.mapping.userMapper"就是me.gacl.mapping(包名)+userMapper(userMapper.xml文件去除后缀)
+ -->
+<mapper namespace="bat.com.mapping.classMapper">
+  <!-- 
+	        根据班级id查询班级信息(带老师的信息)
+	        ##1. 联表查询
+	        SELECT * FROM class c,leader t WHERE c.leader_id=t.l_id AND c.c_id=1;
+	        
+	        ##2. 执行两次查询
+	        SELECT * FROM class WHERE c_id=1;  //leader_id=1
+	        SELECT * FROM leader WHERE l_id=1;//使用上面得到的leader_id
+	     -->
+	
+	    <!-- 
+	    方式一：嵌套结果：使用嵌套结果映射来处理重复的联合结果的子集
+	             封装联表查询的数据(去除重复的数据)
+	        select * from class c, leader t where c.leader_id=t.l_id and c.c_id=1
+	    -->	
+	<select id="getClazz" parameterType="int" resultMap="ClassResultMap">
+		select * from class c, leader l, student s where c.leader_id = l.l_id and c.c_id = s.class_id and c.c_id = #{id}
+	</select>
+	<!-- 使用resultMap映射实体类和字段之间的一一对应关系 -->
+	<resultMap type="bat.com.domain.Classes" id="ClassResultMap">
+		<id property="id" column="c_id"/>
+		<result property="name" column="c_name"/>
+		<association property="leader" javaType="bat.com.domain.Leader">
+			<id property="id" column="l_id"/>
+			<result property="name" column="l_name"/>
+		</association>
+		<!-- 一对多 -->
+		<!-- ofType指定students集合中的对象类型 -->
+		<collection property="students" ofType="bat.com.domain.Student">
+			<id property="id" column="s_id"/>
+			<result property="name" column="s_name"/>
+		</collection>
+	</resultMap>
+	
+    <!-- 
+  		  方式二：嵌套查询：通过执行另外一个SQL映射语句来返回预期的复杂类型
+        SELECT * FROM class WHERE c_id=1;
+        SELECT * FROM leader WHERE l_id=1   //1 是上一个查询得到的leader_id的值
+    -->
+    <select id="getClass2" parameterType="int" resultMap="ClassResultMap2">
+    	select * from class where c_id = #{id}
+    </select>
+    
+    <resultMap type="bat.com.domain.Classes" id="ClassResultMap2">
+    	<id property="id" column="c_id"/>
+    	<result property="name" column="c_name"/>
+    	<association property="leader" column="leader_id" select="getLeader"></association>
+    	<collection property="students" column="c_id" ofType="bat.com.domain.Student" select="getStudent"></collection>
+    </resultMap>
+    
+    <select id="getLeader" parameterType="int" resultType="bat.com.domain.Leader">
+    	select l_id id, l_name name from leader where l_id=#{id}
+    </select>
+    
+    <select id="getStudent" parameterType="int" resultType="bat.com.domain.Student">
+    	select s_id id, s_name name from student where class_id=#{id}
+    </select>
+	    
+</mapper>
