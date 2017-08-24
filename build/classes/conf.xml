@@ -35,8 +35,9 @@
         userMapper.xml位于me.gacl.mapping这个包下，所以resource写成me/gacl/mapping/userMapper.xml-->
         <mapper resource="bat/com/mapping/teacherMapper.xml"/>
         <mapper resource="bat/com/mapping/userMapper.xml"/>
+        <mapper resource="bat/com/mapping/orderMapper.xml"/>
         <!-- 告知映射文件方式2，自动扫描包内的Mapper接口与配置文件 -->
-         <!-- <package name="com/cy/mybatis/mapper"/> -->
+        <!--  <package name="bat/com/mapping"/> -->
          
          <!-- 基于注解实现 -->
          <mapper class="bat.com.mapping.UserMapperI"/>
